@@ -20,7 +20,7 @@
 #pragma once
 #include <string>
 #include "vulkan/vulkan_core.h"
-namespace gltfr {
+namespace ame {
 void imageToRgba8Linear(VkCommandBuffer  cmd,
                         VkDevice         device,
                         VkPhysicalDevice physicalDevice,
@@ -31,4 +31,4 @@ void imageToRgba8Linear(VkCommandBuffer  cmd,
 
 void saveImageToFile(VkDevice device, VkImage dstImage, VkDeviceMemory dstImageMemory, VkExtent2D size, const std::string& filename, int quality = 100);
 
-}  // namespace gltfr
+}  // namespace ame

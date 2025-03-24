@@ -28,7 +28,7 @@
 
 
 // Convert a tiled image to RGBA8 linear
-void gltfr::imageToRgba8Linear(VkCommandBuffer  cmd,
+void ame::imageToRgba8Linear(VkCommandBuffer  cmd,
                                VkDevice         device,
                                VkPhysicalDevice physicalDevice,
                                VkImage          srcImage,
@@ -96,7 +96,7 @@ void gltfr::imageToRgba8Linear(VkCommandBuffer  cmd,
 }
 
 
-void gltfr::saveImageToFile(VkDevice device, VkImage dstImage, VkDeviceMemory dstImageMemory, VkExtent2D size, const std::string& filename, int quality)
+void ame::saveImageToFile(VkDevice device, VkImage dstImage, VkDeviceMemory dstImageMemory, VkExtent2D size, const std::string& filename, int quality)
 {
   // Get layout of the image (including offset and row pitch)
   VkImageSubresource  subResource{VK_IMAGE_ASPECT_COLOR_BIT, 0, 0};

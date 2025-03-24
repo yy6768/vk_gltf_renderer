@@ -71,7 +71,31 @@ _add_nvpro_core_lib()
 
 #####################################################################################
 # Source and shader files for this project
-file(GLOB SOURCE_FILES src/*.*)
+# Core files
+file(GLOB CORE_FILES src/core/*.*)
+
+# Renderer files
+file(GLOB RENDERER_FILES src/renderers/*.*)
+
+# Scene files
+file(GLOB SCENE_FILES src/scene/*.*)
+
+# UI files
+file(GLOB UI_FILES src/ui/*.*)
+
+# Effects files
+file(GLOB EFFECTS_FILES src/effects/*.*)
+
+# Utils files
+file(GLOB UTILS_FILES src/utils/*.*)
+
+# Vulkan files
+file(GLOB VULKAN_FILES src/vulkan/*.*)
+
+# Root files (keep temporarily until we're sure everything is working)
+# file(GLOB ROOT_FILES src/*.*)
+
+# Shader files
 file(GLOB SHADER_SOURCE shaders/*.glsl)
 file(GLOB SHADER_HEADER shaders/*.h)
 file(GLOB SHADER_SLANG shaders/*.slang)
@@ -86,7 +110,14 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 #
 add_executable(${PROJNAME})
 # Sources for the project
-target_sources(${PROJNAME} PRIVATE ${SOURCE_FILES})
+target_sources(${PROJNAME} PRIVATE 
+               ${CORE_FILES}
+               ${RENDERER_FILES}
+               ${SCENE_FILES}
+               ${UI_FILES}
+               ${EFFECTS_FILES}
+               ${UTILS_FILES}
+               ${VULKAN_FILES})
 target_sources(${PROJNAME} PRIVATE ${COMMON_SOURCE_FILES})
 target_sources(${PROJNAME} PRIVATE ${PACKAGE_SOURCE_FILES})
 target_sources(${PROJNAME} PRIVATE ${SHADER_SOURCE} ${SHADER_HEADER} ${SHADER_SLANG})
@@ -112,14 +143,29 @@ target_compile_definitions(${PROJNAME} PRIVATE NVPRO_CORE_DIR="${NVPRO_CORE_DIR}
 # Extra include directories
 target_include_directories(${PROJNAME} PRIVATE ${RAPIDJSON_INCLUDE_DIR})
 target_include_directories(${PROJNAME} PRIVATE ${MIKKTSPACE_DIR})
+# Add include directories for internal modules
+target_include_directories(${PROJNAME} PRIVATE 
+                          ${CMAKE_CURRENT_SOURCE_DIR}/src
+                          ${CMAKE_CURRENT_SOURCE_DIR}/src/core
+                          ${CMAKE_CURRENT_SOURCE_DIR}/src/renderers
+                          ${CMAKE_CURRENT_SOURCE_DIR}/src/scene
+                          ${CMAKE_CURRENT_SOURCE_DIR}/src/utils
+                          ${CMAKE_CURRENT_SOURCE_DIR}/src/ui
+                          ${CMAKE_CURRENT_SOURCE_DIR}/src/effects
+                          ${CMAKE_CURRENT_SOURCE_DIR}/src/vulkan)
 
 # Folders for Visual Studio
+source_group("Core" FILES ${CORE_FILES})
+source_group("Renderers" FILES ${RENDERER_FILES})
+source_group("Scene" FILES ${SCENE_FILES})
+source_group("UI" FILES ${UI_FILES})
+source_group("Effects" FILES ${EFFECTS_FILES})
+source_group("Utils" FILES ${UTILS_FILES})
+source_group("Vulkan" FILES ${VULKAN_FILES})
 source_group("Common" FILES ${COMMON_SOURCE_FILES} ${PACKAGE_SOURCE_FILES} )
 source_group("Shader Files" FILES ${SHADER_SOURCE} ${SHADER_SLANG})
 source_group("Shader Files/common" FILES ${SHADER_COMMON_FILES} ${SHADER_HEADER})
 source_group("MikkTSpace" FILES ${MIKKTSPACE_SRC})
-
-
 
 
 # ---- DRACO ----

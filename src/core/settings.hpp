@@ -32,7 +32,7 @@ namespace DH {
 #include "shaders/device_host.h"  // Include the device/host structures
 }
 
-namespace gltfr {
+namespace ame {
 
 // Settings for the renderer
 struct Settings
@@ -48,8 +48,9 @@ struct Settings
   {
     ePathtracer,
     eRaster,
+    eRDG,
   };
-  static constexpr const char* rendererNames[] = {"Pathtracer", "Raster"};
+  static constexpr const char* rendererNames[] = {"Pathtracer", "Raster", "RDG"};
 
 
   int          maxFrames            = 200000;       // Maximum number of frames to render (used by pathtracer)
@@ -87,4 +88,4 @@ struct PathtraceSettings
 };
 
 
-}  // namespace gltfr
+}  // namespace ame

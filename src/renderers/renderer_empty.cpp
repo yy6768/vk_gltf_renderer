@@ -22,7 +22,7 @@
 #include "nvvk/dynamicrendering_vk.hpp"
 #include "nvvkhl/shaders/dh_tonemap.h"
 
-namespace gltfr {
+namespace ame {
 
 // This renderer is empty, it just clears the screen
 class RendererEmpty : public Renderer
@@ -50,4 +50,4 @@ std::unique_ptr<Renderer> makeRendererEmpty()
   return std::make_unique<RendererEmpty>();
 }
 
-}  // namespace gltfr
+}  // namespace ame

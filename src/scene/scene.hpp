@@ -63,7 +63,7 @@ namespace DH {
 #include "settings.hpp"
 
 
-namespace gltfr {
+namespace ame {
 
 // Scene with glTF model
 class Scene
@@ -156,4 +156,4 @@ public:
   };
 };
 
-}  // namespace gltfr
+}  // namespace ame

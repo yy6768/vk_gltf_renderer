@@ -25,7 +25,7 @@
 
 #include "_autogen/denoise.comp.glsl.h"
 
-namespace gltfr {
+namespace ame {
 
 extern bool g_forceExternalShaders;
 
@@ -145,4 +145,4 @@ private:
   DH::PushConstantDenoiser m_pushConstant{};
 };
 
-}  // namespace gltfr
+}  // namespace ame

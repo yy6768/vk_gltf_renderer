@@ -67,7 +67,7 @@ static bool checkLibraryAvailability(const char* libraryName)
 // The allocator is used to allocate memory for the Vulkan objects.
 // The shader manager is used to compile the shaders.
 // The temporary command pool is used to create temporary command buffers.
-void gltfr::Resources::init(VulkanInfo& _ctx)
+void ame::Resources::init(VulkanInfo& _ctx)
 {
   ctx = _ctx;
 
@@ -109,7 +109,7 @@ void gltfr::Resources::init(VulkanInfo& _ctx)
 // to display the result of the renderers.
 // The image is created with the VK_FORMAT_R8G8B8A8_UNORM format,
 // therefore the image should be tonemapped before displaying.
-void gltfr::Resources::resizeGbuffers(const VkExtent2D& size)
+void ame::Resources::resizeGbuffers(const VkExtent2D& size)
 {
   vkDeviceWaitIdle(ctx.device);
   m_finalImage->destroy();
@@ -119,7 +119,7 @@ void gltfr::Resources::resizeGbuffers(const VkExtent2D& size)
 
 //------------------------------------------------------------------
 // Utility function to create a temporary command buffer
-VkCommandBuffer gltfr::Resources::createTempCmdBuffer()
+VkCommandBuffer ame::Resources::createTempCmdBuffer()
 {
   VkCommandBuffer cmd = m_tempCommandPool->createCommandBuffer(VK_COMMAND_BUFFER_LEVEL_PRIMARY, true);
   nvvk::DebugUtil(ctx.device).setObjectName(cmd, "tempCmdBuffer");
@@ -128,7 +128,7 @@ VkCommandBuffer gltfr::Resources::createTempCmdBuffer()
 
 //------------------------------------------------------------------
 // Utility function to submit and wait for a temporary command buffer
-void gltfr::Resources::submitAndWaitTempCmdBuffer(VkCommandBuffer cmd)
+void ame::Resources::submitAndWaitTempCmdBuffer(VkCommandBuffer cmd)
 {
   m_tempCommandPool->submitAndWait(cmd);
   NVVK_CHECK(vkDeviceWaitIdle(ctx.device));
@@ -154,7 +154,7 @@ void setCompilerOptions(nvvkhl::GlslCompiler* glslC)
 //------------------------------------------------------------------
 // Compile a GLSL shader to SPIR-V
 // Return the result of the compilation as ShaderC object
-shaderc::SpvCompilationResult gltfr::Resources::compileGlslShader(const std::string& filename, shaderc_shader_kind shaderKind) const
+shaderc::SpvCompilationResult ame::Resources::compileGlslShader(const std::string& filename, shaderc_shader_kind shaderKind) const
 {
   // nvh::ScopedTimer st(__FUNCTION__);
   if(!m_glslC)
@@ -166,7 +166,7 @@ shaderc::SpvCompilationResult gltfr::Resources::compileGlslShader(const std::str
 //------------------------------------------------------------------
 // Create a shader module from the SPIR-V result
 //
-VkShaderModule gltfr::Resources::createShaderModule(shaderc::SpvCompilationResult& compResult) const
+VkShaderModule ame::Resources::createShaderModule(shaderc::SpvCompilationResult& compResult) const
 {
   // nvh::ScopedTimer st(__FUNCTION__);
   if(!m_glslC)
@@ -178,7 +178,7 @@ VkShaderModule gltfr::Resources::createShaderModule(shaderc::SpvCompilationResul
 // Create the structure to pass to vkCreateShaderModule if
 // the compilation was successful
 //
-bool gltfr::Resources::createShaderModuleCreateInfo(shaderc::SpvCompilationResult& compResult, VkShaderModuleCreateInfo& createInfo)
+bool ame::Resources::createShaderModuleCreateInfo(shaderc::SpvCompilationResult& compResult, VkShaderModuleCreateInfo& createInfo)
 {
   if(compResult.GetNumErrors() > 0)
   {
@@ -193,7 +193,7 @@ bool gltfr::Resources::createShaderModuleCreateInfo(shaderc::SpvCompilationResul
 }
 
 // This is needed when shader file have changed
-void gltfr::Resources::resetSlangCompiler()
+void ame::Resources::resetSlangCompiler()
 {
   if(m_slangC)
     m_slangC->newSession();

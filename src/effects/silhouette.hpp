@@ -34,7 +34,7 @@ namespace DH {
 
 extern std::vector<std::string> g_applicationSearchPaths;  // Used by the shader manager
 
-namespace gltfr {
+namespace ame {
 
 extern bool g_forceExternalShaders;
 
@@ -105,4 +105,4 @@ private:
   DH::PushConstantSilhouette m_pushConstant{};
 };
 
-}  // namespace gltfr
+}  // namespace ame

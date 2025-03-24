@@ -45,7 +45,7 @@ It holds the Vulkan resources, such as
 // Local to application
 #include "slang_compiler.hpp"
 
-namespace gltfr {
+namespace ame {
 struct Queue
 {
   VkQueue  queue       = VK_NULL_HANDLE;
@@ -98,4 +98,4 @@ private:
   bool m_hasGBufferChanged{false};
 };
 
-}  // namespace gltfr
+}  // namespace ame

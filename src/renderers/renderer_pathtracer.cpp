@@ -54,7 +54,7 @@ namespace PE = ImGuiH::PropertyEditor;
 #include "nvvk/shaders_vk.hpp"
 #include "collapsing_header_manager.h"
 
-namespace gltfr {
+namespace ame {
 extern bool g_forceExternalShaders;
 
 // Settings for the pathtracer
@@ -727,4 +727,4 @@ std::unique_ptr<Renderer> makeRendererPathtracer()
   return std::make_unique<RendererPathtracer>();
 }
 
-}  // namespace gltfr
+}  // namespace ame

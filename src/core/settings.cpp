@@ -27,13 +27,13 @@
 //-----------------------------------------------------------------------------
 // Rendering the UI for the settings
 //
-void gltfr::Settings::onUI()
+void ame::Settings::onUI()
 {
   auto& headerManager = CollapsingHeaderManager::getInstance();
   namespace PE = ImGuiH::PropertyEditor;
   if(headerManager.beginHeader("Settings"))
   {
-    PE::begin("gltfr::Settings::onUI");
+    PE::begin("ame::Settings::onUI");
     PE::SliderInt("Max Frames", &maxFrames, 1, 1000000);
     PE::Checkbox("Show Axis", &showAxis);
     PE::SliderFloat("Max Luminance", &maxLuminance, 0.0f, 10000.0f);
@@ -45,7 +45,7 @@ void gltfr::Settings::onUI()
 
 // The HDR intensity is the luminance of the environment when using HDR.
 // See: HdrEnv::getIntegral()
-void gltfr::Settings::setDefaultLuminance(float hdrEnvIntensity)
+void ame::Settings::setDefaultLuminance(float hdrEnvIntensity)
 {
   maxLuminance = (envSystem == Settings::eSky) ? 10.0f : hdrEnvIntensity;
 }

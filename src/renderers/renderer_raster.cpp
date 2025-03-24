@@ -56,7 +56,7 @@ constexpr auto RASTER_SS_SIZE = 2;  // Change this for the default Super-Samplin
 
 namespace PE = ImGuiH::PropertyEditor;
 
-namespace gltfr {
+namespace ame {
 
 struct RasterSettings
 {
@@ -704,4 +704,4 @@ std::unique_ptr<Renderer> makeRendererRaster()
   return std::make_unique<RendererRaster>();
 }
 
-}  // namespace gltfr
+}  // namespace ame

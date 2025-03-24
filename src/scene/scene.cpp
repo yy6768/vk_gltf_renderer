@@ -42,7 +42,7 @@ constexpr uint32_t MAXTEXTURES = 1000;  // Maximum textures allowed in the appli
 // - Create the buffers for the scene frame information
 // - Create the sky
 // - Create the empty HDR environment
-void gltfr::Scene::init(Resources& res)
+void ame::Scene::init(Resources& res)
 {
   nvvk::ResourceAllocator* alloc = res.m_allocator.get();
 
@@ -69,7 +69,7 @@ void gltfr::Scene::init(Resources& res)
 // - Reset the scene objects
 // - Reset the HDR environment
 // - Reset the sky
-void gltfr::Scene::deinit(Resources& res)
+void ame::Scene::deinit(Resources& res)
 {
   res.m_allocator->destroy(m_sceneFrameInfoBuffer);
 
@@ -86,7 +86,7 @@ void gltfr::Scene::deinit(Resources& res)
 //--------------------------------------------------------------------------------------------------
 // Position the camera to fit the scene
 //
-void gltfr::Scene::fitSceneToView() const
+void ame::Scene::fitSceneToView() const
 {
   if(m_gltfScene)
   {
@@ -98,7 +98,7 @@ void gltfr::Scene::fitSceneToView() const
 //--------------------------------------------------------------------------------------------------
 // Position the camera to fit the selected object
 //
-void gltfr::Scene::fitObjectToView() const
+void ame::Scene::fitObjectToView() const
 {
   if(m_selectedRenderNode >= 0)
   {
@@ -110,7 +110,7 @@ void gltfr::Scene::fitObjectToView() const
 //--------------------------------------------------------------------------------------------------
 // Select a render node
 // - tells the scene graph to select the node
-void gltfr::Scene::selectRenderNode(int renderNodeIndex)
+void ame::Scene::selectRenderNode(int renderNodeIndex)
 {
   m_selectedRenderNode = renderNodeIndex;
   if(m_sceneGraph && m_gltfScene && renderNodeIndex > -1)
@@ -127,7 +127,7 @@ void gltfr::Scene::selectRenderNode(int renderNodeIndex)
 //--------------------------------------------------------------------------------------------------
 // Return the filename of the scene
 //
-std::string gltfr::Scene::getFilename() const
+std::string ame::Scene::getFilename() const
 {
   if(m_gltfScene != nullptr)
     return m_gltfScene->getFilename();
@@ -136,7 +136,7 @@ std::string gltfr::Scene::getFilename() const
 
 //--------------------------------------------------------------------------------------------------
 // Recreating the tangents of the scene
-void gltfr::Scene::recreateTangents(bool mikktspace)
+void ame::Scene::recreateTangents(bool mikktspace)
 {
   if(m_gltfScene && m_gltfScene->valid())
   {
@@ -152,7 +152,7 @@ void gltfr::Scene::recreateTangents(bool mikktspace)
 //--------------------------------------------------------------------------------------------------
 // Load a scene or HDR environment
 //
-bool gltfr::Scene::load(Resources& resources, const std::string& filename)
+bool ame::Scene::load(Resources& resources, const std::string& filename)
 {
   const std::string extension   = std::filesystem::path(filename).extension().string();
   bool              sceneloaded = false;
@@ -224,7 +224,7 @@ bool gltfr::Scene::load(Resources& resources, const std::string& filename)
 // After the scene is loaded, we need to create the descriptor set and write the information
 // - This is done after the scene is loaded, and the camera is fitted
 //
-void gltfr::Scene::postSceneCreateProcess(Resources& resources, const std::string& filename)
+void ame::Scene::postSceneCreateProcess(Resources& resources, const std::string& filename)
 {
   if(filename.empty())
     return;
@@ -243,7 +243,7 @@ void gltfr::Scene::postSceneCreateProcess(Resources& resources, const std::strin
 //--------------------------------------------------------------------------------------------------
 // Save the scene
 //
-bool gltfr::Scene::save(const std::string& filename) const
+bool ame::Scene::save(const std::string& filename) const
 {
   if(m_gltfScene && m_gltfScene->valid() && !filename.empty())
   {
@@ -260,7 +260,7 @@ bool gltfr::Scene::save(const std::string& filename) const
   return false;
 }
 
-void gltfr::Scene::createDescriptorPool(VkDevice device)
+void ame::Scene::createDescriptorPool(VkDevice device)
 {
   const std::vector<VkDescriptorPoolSize> poolSizes{
       {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, MAXTEXTURES},
@@ -283,7 +283,7 @@ void gltfr::Scene::createDescriptorPool(VkDevice device)
 //--------------------------------------------------------------------------------------------------
 // Create the descriptor set for the scene
 //
-void gltfr::Scene::createDescriptorSet(VkDevice device)
+void ame::Scene::createDescriptorSet(VkDevice device)
 {
   std::vector<VkDescriptorSetLayoutBinding> layoutBindings;
   layoutBindings.push_back({.binding         = SceneBindings::eFrameInfo,
@@ -337,7 +337,7 @@ void gltfr::Scene::createDescriptorSet(VkDevice device)
 //--------------------------------------------------------------------------------------------------
 // Write the descriptor set for the scene
 //
-void gltfr::Scene::writeDescriptorSet(Resources& resources) const
+void ame::Scene::writeDescriptorSet(Resources& resources) const
 {
   if(!m_gltfScene->valid())
   {
@@ -382,7 +382,7 @@ void gltfr::Scene::writeDescriptorSet(Resources& resources) const
                          writeDescriptorSets.data(), 0, nullptr);
 }
 
-void gltfr::Scene::destroyDescriptorSet(VkDevice device)
+void ame::Scene::destroyDescriptorSet(VkDevice device)
 {
   if(m_descriptorPool)
   {
@@ -401,7 +401,7 @@ void gltfr::Scene::destroyDescriptorSet(VkDevice device)
 // - Update the Vulkan scene
 // - Update the RTX scene
 //
-bool gltfr::Scene::processFrame(VkCommandBuffer cmd, Settings& settings)
+bool ame::Scene::processFrame(VkCommandBuffer cmd, Settings& settings)
 {
   // Dealing with animation
   if(m_gltfScene->hasAnimation() && m_animControl.doAnimation())
@@ -529,7 +529,7 @@ bool gltfr::Scene::processFrame(VkCommandBuffer cmd, Settings& settings)
 // The sceneRtx is the Vulkan representation of the scene for ray tracing
 // - Bottom-level acceleration structures
 // - Top-level acceleration structure
-void gltfr::Scene::createVulkanScene(Resources& res)
+void ame::Scene::createVulkanScene(Resources& res)
 {
   nvh::ScopedTimer st(std::string("\n") + __FUNCTION__);
 
@@ -595,7 +595,7 @@ void gltfr::Scene::createVulkanScene(Resources& res)
 //--------------------------------------------------------------------------------------------------
 // Create the HDR environment
 //
-void gltfr::Scene::createHdr(Resources& res, const std::string& filename)
+void ame::Scene::createHdr(Resources& res, const std::string& filename)
 {
   nvh::ScopedTimer st(std::string("\n") + __FUNCTION__);
 
@@ -612,7 +612,7 @@ void gltfr::Scene::createHdr(Resources& res, const std::string& filename)
   setDirtyFlag(Scene::eHdrEnv, true);
 }
 
-void gltfr::Scene::generateHdrMipmap(VkCommandBuffer cmd, Resources& res)
+void ame::Scene::generateHdrMipmap(VkCommandBuffer cmd, Resources& res)
 {
   vkQueueWaitIdle(res.ctx.GCT0.queue);
   nvvk::cmdGenerateMipmaps(cmd, m_hdrEnv->getHdrTexture().image, VK_FORMAT_R32G32B32A32_SFLOAT,
@@ -623,7 +623,7 @@ void gltfr::Scene::generateHdrMipmap(VkCommandBuffer cmd, Resources& res)
 // Update the frame counter only if the camera has NOT changed
 // otherwise, reset the frame counter
 //
-bool gltfr::Scene::updateFrameCount(Settings& settings)
+bool ame::Scene::updateFrameCount(Settings& settings)
 {
   static glm::mat4 ref_cam_matrix;
   static float     ref_fov{CameraManip.getFov()};
@@ -648,12 +648,12 @@ bool gltfr::Scene::updateFrameCount(Settings& settings)
 
 //--------------------------------------------------------------------------------------------------
 // Reset the frame counter
-void gltfr::Scene::resetFrameCount()
+void ame::Scene::resetFrameCount()
 {
   m_sceneFrameInfo.frameCount = -1;
 }
 
-nvh::Bbox gltfr::Scene::getRenderNodeBbox(int nodeID) const
+nvh::Bbox ame::Scene::getRenderNodeBbox(int nodeID) const
 {
   nvh::Bbox worldBbox({-1, -1, -1}, {1, 1, 1});
   if(nodeID < 0)
@@ -688,7 +688,7 @@ nvh::Bbox gltfr::Scene::getRenderNodeBbox(int nodeID) const
 //   - Scene Graph
 //   - Statistics
 //
-bool gltfr::Scene::onUI(Resources& resources, Settings& settings, GLFWwindow* winHandle)
+bool ame::Scene::onUI(Resources& resources, Settings& settings, GLFWwindow* winHandle)
 {
   auto& headerManager = CollapsingHeaderManager::getInstance();
 

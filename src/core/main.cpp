@@ -85,15 +85,15 @@ std::string g_inHdr;
 
 namespace PE = ImGuiH::PropertyEditor;
 
-namespace gltfr {
+namespace ame {
 bool g_forceExternalShaders = false;
 
 extern PathtraceSettings g_pathtraceSettings;
 
-class GltfRendererElement : public nvvkhl::IAppElement
+class ameendererElement : public nvvkhl::IAppElement
 {
 public:
-  GltfRendererElement() { addSettingsHandler(); }
+  ameendererElement() { addSettingsHandler(); }
 
   //--------------------------------------------------------------------------------------------------
   // Called at the beginning of the application
@@ -103,7 +103,7 @@ public:
     m_app = app;
 
     // Getting all required resources
-    gltfr::VulkanInfo ctx;
+    ame::VulkanInfo ctx;
     ctx.device         = app->getDevice();
     ctx.physicalDevice = app->getPhysicalDevice();
     ctx.GCT0           = {app->getQueue(0).queue, app->getQueue(0).familyIndex};  // See creation of queues in main()
@@ -594,6 +594,9 @@ private:
       case Settings::eRaster:
         m_renderer = makeRendererRaster();
         break;
+      case Settings::eRDG:
+        m_renderer = makeRendererRDG();
+        break;
     }
     if(m_renderer)
     {
@@ -657,7 +660,7 @@ private:
   // This goes in the .ini file and remember the settings of the application
   void addSettingsHandler()
   {
-    m_settingsHandler.setHandlerName("GLTFRenderer");
+    m_settingsHandler.setHandlerName("ameenderer");
     m_settingsHandler.setSetting("Renderer", reinterpret_cast<int*>(&m_settings.renderSystem));
     m_settingsHandler.setSetting("MaxFrames", &m_settings.maxFrames);
     m_settingsHandler.setSetting("ShowAxis", &m_settings.showAxis);
@@ -672,8 +675,8 @@ private:
   Resources                           m_resources;
   Settings                            m_settings;
   Scene                               m_scene;
-  std::unique_ptr<gltfr::Renderer>    m_emptyRenderer{};
-  std::unique_ptr<gltfr::Renderer>    m_renderer{};
+  std::unique_ptr<ame::Renderer>    m_emptyRenderer{};
+  std::unique_ptr<ame::Renderer>    m_renderer{};
   nvvkhl::TonemapperPostProcess       m_tonemapper;
   std::unique_ptr<nvvk::RayPickerKHR> m_picker{};
   ImGuiH::SettingsHandler             m_settingsHandler;
@@ -682,7 +685,7 @@ private:
 };
 
 
-}  // namespace gltfr
+}  // namespace ame
 
 static void setWindowIcon(GLFWwindow* window)
 {
@@ -718,10 +721,10 @@ auto main(int argc, char** argv) -> int
   cli.addArgument({"--frames"}, &appInfo.headlessFrameCount, "Number of frames to render in headless mode");
   cli.addArgument({"--size"}, &appInfo.windowSize, "Window size in [W H] format");
   cli.addArgument({"--vsync"}, &appInfo.vSync, "Turn on vsync");
-  cli.addArgument({"--maxDepth"}, &gltfr::g_pathtraceSettings.maxDepth);
-  cli.addArgument({"--maxSamples"}, &gltfr::g_pathtraceSettings.maxSamples);
-  cli.addArgument({"--renderMode"}, (int*)&gltfr::g_pathtraceSettings.renderMode);
-  cli.addArgument({"--forceExternalShaders"}, &gltfr::g_forceExternalShaders);
+  cli.addArgument({"--maxDepth"}, &ame::g_pathtraceSettings.maxDepth);
+  cli.addArgument({"--maxSamples"}, &ame::g_pathtraceSettings.maxSamples);
+  cli.addArgument({"--renderMode"}, (int*)&ame::g_pathtraceSettings.renderMode);
+  cli.addArgument({"--forceExternalShaders"}, &ame::g_forceExternalShaders);
   cli.parse(argc, argv);
 
 
@@ -843,10 +846,10 @@ auto main(int argc, char** argv) -> int
   // Create Elements of the application
   g_elemCamera      = std::make_shared<nvvkhl::ElementCamera>();
   g_elemProfiler    = std::make_shared<nvvkhl::ElementProfiler>(false);
-  auto gltfRenderer = std::make_shared<gltfr::GltfRendererElement>();  // This is the main element of the application
+  auto ameenderer = std::make_shared<ame::ameendererElement>();  // This is the main element of the application
 
   // All the elements are added to the application
-  app->addElement(gltfRenderer);    // Rendering the glTF scene
+  app->addElement(ameenderer);    // Rendering the glTF scene
   app->addElement(g_elemCamera);    // Controlling the camera movement
   app->addElement(g_elemProfiler);  // GPU Profiler
 #ifdef USE_DGBPRINTF
@@ -861,7 +864,7 @@ auto main(int argc, char** argv) -> int
   app->run();
 
   // Cleanup
-  gltfRenderer.reset();
+  ameenderer.reset();
   app.reset();
   vkContext.reset();
 
