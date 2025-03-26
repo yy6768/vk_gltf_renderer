@@ -1,7 +1,7 @@
-#include "renderer.hpp"
-#include "resources.hpp"
-#include "scene.hpp"
-#include "settings.hpp"
+#include "core/renderer.hpp"
+#include "core/resources.hpp"
+#include "scene/scene.hpp"
+#include "core/settings.hpp"
 
 namespace ame {
 

@@ -75,7 +75,12 @@ _add_nvpro_core_lib()
 file(GLOB CORE_FILES src/core/*.*)
 
 # Renderer files
-file(GLOB RENDERER_FILES src/renderers/*.*)
+file(GLOB RENDERER_FILES 
+  src/renderers/renderer_empty.cpp
+  src/renderers/renderer_rdg.cpp
+  src/renderers/renderer_pathtracer.cpp
+  src/renderers/renderer_raster.cpp
+  )
 
 # Scene files
 file(GLOB SCENE_FILES src/scene/*.*)
@@ -90,7 +95,10 @@ file(GLOB EFFECTS_FILES src/effects/*.*)
 file(GLOB UTILS_FILES src/utils/*.*)
 
 # Vulkan files
-file(GLOB VULKAN_FILES src/vulkan/*.*)
+file(GLOB VULKAN_FILES src/vk/vulkan_context.hpp)
+
+# RenderGraph files
+file(GLOB RENDER_GRAPH_FILES src/RenderGraph/*.*)
 
 # Root files (keep temporarily until we're sure everything is working)
 # file(GLOB ROOT_FILES src/*.*)
@@ -241,3 +249,9 @@ add_custom_command(TARGET ${PROJNAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${Slang_DLL} ${Slang_glslang_DLL} $<TARGET_FILE_DIR:${PROJNAME}> VERBATIM
     )
 install(FILES ${Slang_DLL} ${Slang_glslang_DLL} DESTINATION bin_${ARCH}$<IF:$<CONFIG:Debug>,_debug,>)
+
+# 查找Vulkan SDK
+find_package(Vulkan REQUIRED)
+
+# 添加Vulkan头文件路径
+include_directories(${Vulkan_INCLUDE_DIRS})
