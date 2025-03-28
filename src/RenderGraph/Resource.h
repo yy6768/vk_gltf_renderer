@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 
-namespace vk_gltf_renderer {
+namespace ame {
 
 class Resource {
 public:
@@ -41,4 +41,4 @@ protected:
     Type type_;
 };
 
-} // namespace vk_gltf_renderer 
+} // namespace ame 
