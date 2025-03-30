@@ -38,19 +38,20 @@
 #include "nvvkhl/element_nvml.hpp"
 #include "nvvkhl/element_profiler.hpp"
 #include "nvvkhl/tonemap_postprocess.hpp"
-
-// Application specific headers
-#include "busy_window.hpp"
-#include "renderer.hpp"
-#include "scene.hpp"
-#include "settings.hpp"
-#include "utilities.hpp"
-#include "vk_context.hpp"
-#include "stb_image.h"
-#include "doc/app_icon_png.h"
-#include "collapsing_header_manager.h"
-#include "perproject_globals.hpp"
 #include "nvvk/nsight_aftermath_vk.hpp"
+
+#include "stb_image.h"
+
+#include "vk/vk_context.hpp"
+// Application specific headers
+#include "ui/busy_window.hpp"
+#include "core/renderer.hpp"
+#include "scene/scene.hpp"
+#include "core/settings.hpp"
+#include "utils/utilities.hpp"
+#include "doc/app_icon_png.h"
+#include "ui/collapsing_header_manager.h"
+#include "perproject_globals.hpp"
 #include "imgui_mouse_state.hpp"
 
 // #define USE_AFTERMATH
@@ -90,10 +91,10 @@ bool g_forceExternalShaders = false;
 
 extern PathtraceSettings g_pathtraceSettings;
 
-class ameendererElement : public nvvkhl::IAppElement
+class RendererElement : public nvvkhl::IAppElement
 {
 public:
-  ameendererElement() { addSettingsHandler(); }
+  RendererElement() { addSettingsHandler(); }
 
   //--------------------------------------------------------------------------------------------------
   // Called at the beginning of the application
@@ -846,7 +847,7 @@ auto main(int argc, char** argv) -> int
   // Create Elements of the application
   g_elemCamera      = std::make_shared<nvvkhl::ElementCamera>();
   g_elemProfiler    = std::make_shared<nvvkhl::ElementProfiler>(false);
-  auto ameenderer = std::make_shared<ame::ameendererElement>();  // This is the main element of the application
+  auto ameenderer = std::make_shared<ame::RendererElement>();  // This is the main element of the application
 
   // All the elements are added to the application
   app->addElement(ameenderer);    // Rendering the glTF scene

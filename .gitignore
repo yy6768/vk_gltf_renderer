@@ -10,3 +10,5 @@ _Install/
 _autogen/
 
 /media/*
+
+.vscode/c_cpp_properties.json

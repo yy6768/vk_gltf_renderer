@@ -1,7 +1,7 @@
 #include "RenderGraph.h"
 #include <algorithm>
 
-namespace vk_gltf_renderer {
+namespace ame {
 
 RenderGraph::RenderGraph() {}
 
@@ -38,4 +38,4 @@ void RenderGraph::buildExecutionOrder() {
     }
 }
 
-} // namespace vk_gltf_renderer 
+} // namespace ame 

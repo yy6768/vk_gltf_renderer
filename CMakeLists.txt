@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.17)
 
+if(MSVC)
+    # Force MSVC to use UTF-8 encoding in source files
+    add_compile_options("$<$<C_COMPILER_ID:MSVC>:/utf-8>")
+    add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+endif()
 # get_filename_component(PROJNAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 set(PROJNAME vk_gltf_renderer)
 Project(${PROJNAME})
