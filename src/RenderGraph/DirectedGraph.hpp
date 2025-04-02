@@ -1,23 +1,26 @@
 #pragma once
 
-#include <vulkan/vulkan.h>
-#include <string>
-#include <vector>
 #include <memory>
-#include <unordered_set>
-#include <unordered_map>
+#include <iostream>
+#include <locale>
+#include <codecvt>
+#include <string>
+#include <string_view>
+#include <vector>
+#include <algorithm>
+#include <filesystem>
+#include <variant>
+
+#include <cstdint>
+#include <cmath>
 #include <limits>
 
 #include "nvh/nvprint.hpp"
 
 namespace ame {
-
-class RenderPass;
-class Resource;
-
 class DirectedGraph {
 public:
-    static constexpr uint32_t kInvalidIndex = std::numeric_limits<uint32_t>::max() - 1;
+    static constexpr uint32_t kInvalidIndex = std::numeric_limits<std::uint32_t>::max() - 1;
 
     class Node;
     class Edge;
@@ -62,34 +65,4 @@ private:
     uint32_t mCurrentNodeIndex = 0;
     uint32_t mCurrentEdgeIndex = 0;
 };
-
-
-class RenderGraph {
-public:
-    RenderGraph();
-    ~RenderGraph();
-
-    // 添加渲染通道
-    void addPass(const std::string& name, std::shared_ptr<RenderPass> pass);
-    
-    // 添加资源
-    void addResource(const std::string& name, std::shared_ptr<Resource> resource);
-    
-    // 构建渲染图
-    void build();
-    
-    // 执行渲染图
-    void execute(VkCommandBuffer cmdBuffer);
-
-private:
-    std::unordered_map<std::string, std::shared_ptr<RenderPass>> passes_;
-    std::unordered_map<std::string, std::shared_ptr<Resource>> resources_;
-    
-    // 执行顺序
-    std::vector<std::string> executionOrder_;
-    
-    // 构建执行顺序
-    void buildExecutionOrder();
-};
-
-} // namespace ame 
+} // namespace ame

@@ -260,3 +260,11 @@ find_package(Vulkan REQUIRED)
 
 # 添加Vulkan头文件路径
 include_directories(${Vulkan_INCLUDE_DIRS})
+
+# 添加C++标准库的包含路径
+if(MSVC)
+    target_include_directories(${PROJNAME} PRIVATE 
+        "$ENV{VCToolsInstallDir}/include"
+        "$ENV{VCToolsInstallDir}/atlmfc/include"
+    )
+endif()
