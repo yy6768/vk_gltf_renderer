@@ -46,20 +46,52 @@ public:
         for (auto& edgeId: mNodes[index].mIncomingEdges) {
             findEdgeToRemove<false>(mNodes[mEdges[edgeId].mDst].mOutgoingEdges, index, removedEdges);
         }
+        
+        for (auto& edgeId: removedEdges) {
+            mEdges.erase(edgeId);
+        }
         mNodes.erase(index);
         return removedEdges;
     }
 
     uint32_t addEdge(uint32_t src, uint32_t dst) {
+        if (mNodes.find(src) == mNodes.end()) {
+            LOGE("Can't add edge to DirectGraph, src node ID doesn't exist");
+            return kInvalidIndex;
+        }
+        if (mNodes.find(dst) == mNodes.end()) {
+            LOGE("Can't add edge to DirectGraph, dst node ID doesn't exist");
+            return kInvalidIndex;
+        }
+        mNodes[src].mOutgoingEdges.push_back(mCurrentEdgeIndex);
+        mNodes[dst].mIncomingEdges.push_back(mCurrentEdgeIndex);
         mEdges[mCurrentEdgeIndex] = Edge(src, dst);
         return mCurrentEdgeIndex++;
     }
-    void removeEdge(uint32_t src, uint32_t dst);
-    void clear();
-    bool isCyclic() const;
+
+    /**
+     * @brief Remove an edge from the graph.
+     */
+    void removeEdge(uint32_t edgeId) {
+        if(mEdges.find(edgeId) == mEdges.end()) {
+            LOGE("Can't remove edge from DirectGraph, edge ID doesn't exist");
+            return;
+        }
+        const auto& edge = mEdges[edgeId];
+        removeEdgeFromNode<true>(edgeId, mNodes[edge.mSrc]);
+        removeEdgeFromNode<false>(edgeId, mNodes[edge.mDst]);
+        mEdges.erase(edgeId);
+    }
     
-    DirectedGraph();
-    ~DirectedGraph();
+    void clear() {
+        mNodes.clear();
+        mEdges.clear();
+        mCurrentNodeIndex = 0;
+        mCurrentEdgeIndex = 0;
+    }
+    
+    DirectedGraph() = default;
+    ~DirectedGraph() = default;
 
     class Node {
     public:

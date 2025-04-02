@@ -10,58 +10,12 @@
 
 #include "nvh/nvprint.hpp"
 
+#include "DirectedGraph.hpp"
+
 namespace ame {
 
 class RenderPass;
 class Resource;
-
-class DirectedGraph {
-public:
-    static constexpr uint32_t kInvalidIndex = std::numeric_limits<uint32_t>::max() - 1;
-
-    class Node;
-    class Edge;
-
-    uint32_t addNode() {
-        mNodes[mCurrentNodeIndex] = Node();
-        return mCurrentNodeIndex++;
-    }
-
-    std::unordered_set<uint32_t> removeNode(uint32_t index) {
-        if (mNodes.find(index) == mNodes.end())
-        {
-            LOGW("Can't remove node from DirectGraph, node ID doesn't exist");
-            return {};
-        }
-        // Remove all edges connected to the node
-        std::unordered_set<uint32_t> removedEdges;
-        for (auto& edge : mEdges) {
-            if (edge.second.src == index || edge.second.dst == index) {
-                removedEdges.insert(edge.first);
-            }
-        }
-        mNodes.erase(index);
-        return removedEdges;
-    }
-
-    uint32_t addEdge(uint32_t src, uint32_t dst) {
-        mEdges[mCurrentEdgeIndex] = Edge(src, dst);
-        return mCurrentEdgeIndex++;
-    }
-    void removeNode(uint32_t index);
-    void removeEdge(uint32_t src, uint32_t dst);
-    void clear();
-    bool isCyclic() const;
-    
-    DirectedGraph();
-    ~DirectedGraph();
-    
-private:
-    std::unordered_map<uint32_t, Node> mNodes;
-    std::unordered_map<uint32_t, Edge> mEdges;
-    uint32_t mCurrentNodeIndex = 0;
-    uint32_t mCurrentEdgeIndex = 0;
-};
 
 
 class RenderGraph {
@@ -82,14 +36,17 @@ public:
     void execute(VkCommandBuffer cmdBuffer);
 
 private:
-    std::unordered_map<std::string, std::shared_ptr<RenderPass>> passes_;
-    std::unordered_map<std::string, std::shared_ptr<Resource>> resources_;
+    struct EdgeData {
+        std::string src;
+        std::string dst;
+    };
+
+    struct NodeData {
+        std::string name;
+        std::shared_ptr<RenderPass> pass;
+    };
+
     
-    // 执行顺序
-    std::vector<std::string> executionOrder_;
-    
-    // 构建执行顺序
-    void buildExecutionOrder();
 };
 
 } // namespace ame 
