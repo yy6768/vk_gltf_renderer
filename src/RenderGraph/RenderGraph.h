@@ -36,16 +36,23 @@ public:
     void execute(VkCommandBuffer cmdBuffer);
 
 private:
+    // 边数据
     struct EdgeData {
         std::string src;
         std::string dst;
     };
-
+    // 节点数据
     struct NodeData {
         std::string name;
         std::shared_ptr<RenderPass> pass;
     };
-
+    // 图输出
+    struct GraphOutput {
+        uint32_t nodeId = kInvalidIndex;
+        std::string field;
+        std::unordered_set<VkFormat> formats;
+    };
+    
     
 };
 

@@ -122,6 +122,7 @@ public:
     };
     
     
+    
 private:
     std::unordered_map<uint32_t, Node> mNodes;
     std::unordered_map<uint32_t, Edge> mEdges;

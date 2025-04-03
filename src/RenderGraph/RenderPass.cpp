@@ -1,10 +1,26 @@
 #include "RenderPass.h"
 
-namespace vk_gltf_renderer {
+namespace ame {
 
-RenderPass::RenderPass(const std::string& name) : name_(name) {}
+RenderPass::RenderPass(const std::string& name, 
+                       VkDevice& device, 
+                       const RenderPassConfig& config) 
+    : name_(name), device_(device), config_(config) {
+    renderPass_ = nvvk::createRenderPass(device, 
+                                        config_.colorFormats, 
+                                        config_.depthFormat, 
+                                        config_.subpassCount, 
+                                        config_.clearColor, 
+                                        config_.clearDepth, 
+                                        config_.initialLayout, 
+                                        config_.finalLayout);
+}
 
-RenderPass::~RenderPass() {}
+RenderPass::~RenderPass() {
+    if (renderPass_ != VK_NULL_HANDLE) {
+        vkDestroyRenderPass(device_, renderPass_, nullptr);
+    }
+}
 
 void RenderPass::addInput(const std::string& name, std::shared_ptr<Resource> resource) {
     inputs_[name] = resource;
@@ -14,4 +30,4 @@ void RenderPass::addOutput(const std::string& name, std::shared_ptr<Resource> re
     outputs_[name] = resource;
 }
 
-} // namespace vk_gltf_renderer 
+} // namespace ame
