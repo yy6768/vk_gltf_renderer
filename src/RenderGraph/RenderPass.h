@@ -41,7 +41,7 @@ public:
     void addOutput(const std::string& name, std::shared_ptr<Resource> resource);
     
     // 执行渲染通道
-    virtual void execute(VkCommandBuffer cmdBuffer) = 0;
+    virtual void execute(VkCommandBuffer cmdBuffer, VkImageView colorView, VkImageView depthView) = 0;
     
     // 获取所有输入资源
     const std::unordered_map<std::string, std::shared_ptr<Resource>>& getInputs() const { return inputs_; }

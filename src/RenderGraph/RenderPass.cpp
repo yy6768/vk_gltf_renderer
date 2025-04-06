@@ -16,11 +16,6 @@ RenderPass::RenderPass(const std::string& name,
                                         config_.finalLayout);
 }
 
-RenderPass::~RenderPass() {
-    if (renderPass_ != VK_NULL_HANDLE) {
-        vkDestroyRenderPass(device_, renderPass_, nullptr);
-    }
-}
 
 void RenderPass::addInput(const std::string& name, std::shared_ptr<Resource> resource) {
     inputs_[name] = resource;

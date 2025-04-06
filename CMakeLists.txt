@@ -104,6 +104,7 @@ file(GLOB VULKAN_FILES src/vk/vulkan_context.hpp)
 
 # RenderGraph files
 file(GLOB RENDER_GRAPH_FILES src/RenderGraph/*.*)
+message(STATUS "RENDER_GRAPH_FILES: ${RENDER_GRAPH_FILES}")
 
 # Root files (keep temporarily until we're sure everything is working)
 # file(GLOB ROOT_FILES src/*.*)
@@ -130,6 +131,7 @@ target_sources(${PROJNAME} PRIVATE
                ${UI_FILES}
                ${EFFECTS_FILES}
                ${UTILS_FILES}
+               ${RENDER_GRAPH_FILES}
                ${VULKAN_FILES})
 target_sources(${PROJNAME} PRIVATE ${COMMON_SOURCE_FILES})
 target_sources(${PROJNAME} PRIVATE ${PACKAGE_SOURCE_FILES})

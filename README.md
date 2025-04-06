@@ -1,12 +1,16 @@
 # Introduction
 
+
 这个仓库是由VkGLTF Renderer改进过来的，主要希望实现UE的一些先进特性：
-- [x] Render Graph
+- [ ] Render Graph
 - [ ] SVGF/NRD
 - [ ] DDGI
 - [ ] Surfel GI
 - [ ] Mesh SDF
 - [ ] AI Denoising + SR
+
+# Update
+- 2025/04/06 Single Pass Render
 
 # Render Graph (RDG)
 
