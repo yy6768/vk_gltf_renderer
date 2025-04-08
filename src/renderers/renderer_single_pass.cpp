@@ -24,40 +24,7 @@ namespace ame {
 
 extern bool g_forceExternalShaders;
 
-// 自定义三角形着色器的GLSL代码，编译时从字符串编译
-// 顶点着色器 - 没有使用Push Constants
-const char* triangleVertexShaderGlsl = R"(
-#version 450
-layout(location = 0) out vec3 fragColor;
 
-vec2 positions[3] = vec2[](
-    vec2(0.0, -0.5),
-    vec2(0.5, 0.5),
-    vec2(-0.5, 0.5)
-);
-
-vec3 colors[3] = vec3[](
-    vec3(1.0, 0.0, 0.0),
-    vec3(0.0, 1.0, 0.0),
-    vec3(0.0, 0.0, 1.0)
-);
-
-void main() {
-    gl_Position = vec4(positions[gl_VertexIndex], 0.0, 1.0);
-    fragColor = colors[gl_VertexIndex];
-}
-)";
-
-// 片段着色器
-const char* triangleFragmentShaderGlsl = R"(
-#version 450
-layout(location = 0) in vec3 fragColor;
-layout(location = 0) out vec4 outColor;
-
-void main() {
-    outColor = vec4(fragColor, 1.0);
-}
-)";
 
 class TestTrianglePass : public RenderPass {
 public:
