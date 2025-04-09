@@ -1,28 +1,26 @@
-#include "RenderPass.h"
+#include "RenderPass.hpp"
 
 namespace ame {
 
 RenderPass::RenderPass(const std::string& name, 
                        VkDevice& device, 
-                       const RenderPassConfig& config) 
-    : name_(name), device_(device), config_(config) {
-    renderPass_ = nvvk::createRenderPass(device, 
-                                        config_.colorFormats, 
-                                        config_.depthFormat, 
-                                        config_.subpassCount, 
-                                        config_.clearColor, 
-                                        config_.clearDepth, 
-                                        config_.initialLayout, 
-                                        config_.finalLayout);
+                       RenderPassType type,
+                       RenderPassFlags flags) 
+    : name_(name), device_(device), type_(type), flags_(flags) {
 }
 
 
-void RenderPass::addInput(const std::string& name, std::shared_ptr<Resource> resource) {
+
+void RenderPass::addInput(const std::string& name, std::shared_ptr<GraphResource> resource) {
     inputs_[name] = resource;
 }
 
-void RenderPass::addOutput(const std::string& name, std::shared_ptr<Resource> resource) {
+void RenderPass::addOutput(const std::string& name, std::shared_ptr<GraphResource> resource) {
     outputs_[name] = resource;
 }
+
+
+
+
 
 } // namespace ame

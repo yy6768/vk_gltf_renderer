@@ -4,16 +4,17 @@
 #include <string>
 #include <memory>
 
-#include "nvvk/commands_vk.hpp"
 
 #include "core/resources.hpp"
+#include "core/commandlists.hpp"
 #include "RenderGraph/GraphResource.hpp"
 #include "RenderGraph/RenderGraph.hpp"
 
 namespace ame {
-
+class RenderGraph;
 class RenderGraphContext {
     using ResourceMap = GraphResource::ResourceMap;
+    friend class RenderGraphBuilder;
 public:
     RenderGraphContext() = delete;
     RenderGraphContext( RenderGraphContext  const & ) = delete;
@@ -27,6 +28,12 @@ public:
     const VulkanInfo& getVulkanInfo() const;
 private:
     RenderGraphContext(RenderGraph& graph, Resources& resources);
+
+    // CommandLists
+    std::unique_ptr<CommandList> graphics_cmd;
+    std::unique_ptr<CommandList> compute_cmd;
+    std::unique_ptr<CommandList> transfer_cmd;
+    
     uint32_t frameIndex;
     // 渲染区域信息
     VkExtent2D extent;

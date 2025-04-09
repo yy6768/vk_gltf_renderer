@@ -43,6 +43,10 @@ public:
     // 设置资源状态
     virtual void setImageLayout(VkImageLayout layout) = 0;
 
+    // As texture
+    std::shared_ptr<nvvk::Texture> asTexture() const;
+    std::shared_ptr<nvvk::Buffer> asBuffer() const;
+
 protected:
     std::string name_;
     Type type_;

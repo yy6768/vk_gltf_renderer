@@ -29,12 +29,19 @@ extern bool g_forceExternalShaders;
 
 class TestTrianglePass : public RenderPass {
 public:
-    TestTrianglePass(VkDevice& device)
-        : RenderPass("TestTrianglePass", device, createConfig())
+    TestTrianglePass(const std::string& name, VkDevice& device)
+        : RenderPass(name, device, RenderPassType::Graphics, RenderPassFlags::None)
     {}
 
-    void execute(VkCommandBuffer cmdBuffer, VkImageView colorView, VkImageView depthView) override {
-        // 使用动态渲染API而不是传统的FrameBuffer
+
+    void execute(RenderGraphContext& context) override {
+        // 获取命令缓冲区和必要的视图
+        VkCommandBuffer cmdBuffer = context.graphics_cmd->getCommandBuffer();
+        // 从context或资源管理器获取颜色和深度视图
+        VkImageView colorView = context.getResource("outputColor")->getImageView();
+        VkImageView depthView = context.getResource("depth")->getImageView();
+        
+        // 使用动态渲染API
         VkRenderingAttachmentInfo colorAttachment{};
         colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
         colorAttachment.imageView = colorView;
@@ -87,24 +94,16 @@ public:
         vkCmdEndRendering(cmdBuffer);
     }
 
-    // 设置渲染区域尺寸
-    void setExtent(VkExtent2D extent) {
-        extent_ = extent;
-    }
-
     // 创建渲染管线
-    void createPipeline(VkShaderModule vertShaderModule, VkShaderModule fragShaderModule, VkImageView depthView = VK_NULL_HANDLE) {
+    void createPipeline(VkShaderModule vertShaderModule, VkShaderModule fragShaderModule) {
         if (pipeline_ != VK_NULL_HANDLE) {
             vkDestroyPipeline(device_, pipeline_, nullptr);
             pipeline_ = VK_NULL_HANDLE;
         }
 
-        // 创建管线布局 - 不需要Push Constants
+        // 创建管线布局
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipelineLayoutInfo.setLayoutCount = 0;
-        pipelineLayoutInfo.pushConstantRangeCount = 0;  // 不使用Push Constants
-        pipelineLayoutInfo.pPushConstantRanges = nullptr;
         
         VkPipelineLayout pipelineLayout;
         VkResult result = vkCreatePipelineLayout(device_, &pipelineLayoutInfo, nullptr, &pipelineLayout);
@@ -113,17 +112,20 @@ public:
         }
 
         // 使用Dynamic Rendering创建管线
-        std::vector<VkFormat> colorFormats = config_.colorFormats;
+        std::vector<VkFormat> colorFormats = {VK_FORMAT_R8G8B8A8_UNORM}; // 默认格式
         VkPipelineRenderingCreateInfo renderingInfo{};
         renderingInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO;
         renderingInfo.colorAttachmentCount = static_cast<uint32_t>(colorFormats.size());
         renderingInfo.pColorAttachmentFormats = colorFormats.data();
-        renderingInfo.depthAttachmentFormat = config_.depthFormat;
+        
+        // 获取深度格式
+        VkFormat depthFormat = VK_FORMAT_D32_SFLOAT; // 默认深度格式
+        renderingInfo.depthAttachmentFormat = depthFormat;
 
         // 创建图形管线状态
         nvvk::GraphicsPipelineState pipelineState;
         
-        // 顶点输入状态 - 没有顶点输入（三角形硬编码在shader中）
+        // 顶点输入状态 - 没有顶点输入
         pipelineState.inputAssemblyState.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
         
         // 视口状态
@@ -156,8 +158,8 @@ public:
         pipelineState.multisampleState.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
 
         // 深度模板状态
-        pipelineState.depthStencilState.depthTestEnable = depthView != VK_NULL_HANDLE;
-        pipelineState.depthStencilState.depthWriteEnable = depthView != VK_NULL_HANDLE;
+        pipelineState.depthStencilState.depthTestEnable = true;
+        pipelineState.depthStencilState.depthWriteEnable = true;
         pipelineState.depthStencilState.depthCompareOp = VK_COMPARE_OP_LESS;
         pipelineState.depthStencilState.stencilTestEnable = VK_FALSE;
         
@@ -181,7 +183,7 @@ public:
         // 创建图形管线
         VkGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-        pipelineInfo.pNext = &renderingInfo; // 使用动态渲染信息
+        pipelineInfo.pNext = &renderingInfo;
         pipelineInfo.stageCount = static_cast<uint32_t>(shaderStages.size());
         pipelineInfo.pStages = shaderStages.data();
         pipelineInfo.pVertexInputState = &pipelineState.vertexInputState;
@@ -215,16 +217,7 @@ public:
     }
 
 private:
-    static RenderPassConfig createConfig() {
-        RenderPassConfig config;
-        config.colorFormats = {VK_FORMAT_R8G8B8A8_UNORM};  // 使用swapchain格式
-        config.clearColor = true;
-        config.finalLayout = VK_IMAGE_LAYOUT_GENERAL;  // 修改为GENERAL供后续tonemapper使用
-        return config;
-    }
-
     VkPipeline pipeline_ = VK_NULL_HANDLE;
-    VkExtent2D extent_ = {0, 0};
 };
 
 

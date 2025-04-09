@@ -16,16 +16,22 @@
 namespace ame {
 
 class GraphResource;
+class RenderGraphBuilder;
 
 using ResourceMap = GraphResource::ResourceMap;
-struct RenderPassConfig {
-    std::vector<VkFormat> colorFormats;
-    VkFormat depthFormat = VK_FORMAT_UNDEFINED;
-    uint32_t subpassCount = 1;
-    bool clearColor = true;
-    bool clearDepth = true;
-    VkImageLayout initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-    VkImageLayout finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+
+enum class RenderPassType: uint8_t {
+    Graphics,
+	Compute,
+	AsyncCompute,
+	Copy
+};
+
+enum class RenderPassFlags: uint8_t {
+    None = 0,
+    ClearColor = 1 << 0,
+    ClearDepth = 1 << 1,
+    ClearColorAndDepth = ClearColor | ClearDepth,
 };
 
 class RenderData {
@@ -67,7 +73,7 @@ protected:
         const glm::uvec2& defaultTexDims,
         VkFormat defaultTexFormat,
         ResourceMap& resources
-    );
+    ) : mName(passName), mResources(resources), mDefaultTexDims(defaultTexDims), mDefaultTexFormat(defaultTexFormat) {}
 
     const std::string& mName;
     ResourceMap& mResources;
@@ -76,10 +82,19 @@ protected:
 };
 
 class RenderPass {
+    friend class RenderGraph;
+    friend class RenderGraphBuilder;
+    struct RenderTargetData{
+        
+    };
+    struct DepthStencilData{
+
+    };
 public:
     RenderPass(const std::string& name, 
                VkDevice& device, 
-               const RenderPassConfig& config);
+               RenderPassType type,
+               RenderPassFlags flags = RenderPassFlags::None);
 
     virtual ~RenderPass() = default;
 
@@ -94,7 +109,7 @@ public:
     void addOutput(const std::string& name, std::shared_ptr<GraphResource> resource);
     
     // 执行渲染通道
-    virtual void execute(RenderGraphContext& context) = 0;
+    virtual void execute(RenderGraphContext& context, RenderData& data) = 0;
     
     // 获取所有输入资源
     const ResourceMap& getInputs() const { return inputs_; }
@@ -102,18 +117,32 @@ public:
     // 获取所有输出资源
     const ResourceMap& getOutputs() const { return outputs_; }
 
-    // 获取渲染通道句柄
-    VkRenderPass getHandle() const { return renderPass_; }
+    // 获取资源
+    const std::shared_ptr<GraphResource>& getResource(const std::string& name) const;
+
+    // 设置渲染区域大小
+    void setExtent(VkExtent2D extent) { extent_ = extent; }
 protected:
     
     std::string name_;
+    uint32_t ref_count_;
+    RenderPassType type_;
+    RenderPassFlags flags_ = RenderPassFlags::None;
     VkDevice device_;
-    VkRenderPass renderPass_;
-    RenderPassConfig config_;
     ResourceMap inputs_;
     ResourceMap outputs_;
-
+    VkExtent2D extent_;
     friend class RenderGraph;
+    
+    inline std::string PassTypeToString() const {
+        switch (type_) {
+            case RenderPassType::Graphics: return "Graphics";
+            case RenderPassType::Compute: return "Compute";
+            case RenderPassType::AsyncCompute: return "AsyncCompute";
+            case RenderPassType::Copy: return "Copy";
+        }
+        return "Unknown";
+    }
 };
 
 } // namespace ame 

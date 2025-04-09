@@ -90,6 +90,24 @@ public:
         mCurrentEdgeIndex = 0;
     }
     
+    Node getNode(uint32_t nodeId) const {
+        auto it = mNodes.find(nodeId);
+        if (it == mNodes.end()) {
+            LOGE("Node ID %u doesn't exist", nodeId);
+            return Node();
+        }
+        return it->second;
+    }
+    
+    Edge getEdge(uint32_t edgeId) const {
+        auto it = mEdges.find(edgeId);
+        if (it == mEdges.end()) {
+            LOGE("Edge ID %u doesn't exist", edgeId);
+            return Edge();
+        }
+        return it->second;
+    }
+    
     DirectedGraph() = default;
     ~DirectedGraph() = default;
 

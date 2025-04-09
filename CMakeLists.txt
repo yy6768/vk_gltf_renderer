@@ -102,6 +102,9 @@ file(GLOB UTILS_FILES src/utils/*.*)
 # Vulkan files
 file(GLOB VULKAN_FILES src/vk/vulkan_context.hpp)
 
+# Passes files
+file(GLOB PASSES_FILES src/passes/*.*)
+
 # RenderGraph files
 file(GLOB RENDER_GRAPH_FILES src/RenderGraph/*.*)
 message(STATUS "RENDER_GRAPH_FILES: ${RENDER_GRAPH_FILES}")
