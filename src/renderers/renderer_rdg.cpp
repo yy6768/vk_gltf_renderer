@@ -11,8 +11,8 @@
 #include "scene/scene.hpp"
 #include "core/settings.hpp"
 
-#include "RenderGraph/RenderPass.h"
-#include "RenderGraph/Resource.h"
+#include "RenderGraph/RenderPass.hpp"
+#include "RenderGraph/GraphResource.hpp"
 
 #include "nvh/timesampler.hpp"
 #include "nvvk/renderpasses_vk.hpp"

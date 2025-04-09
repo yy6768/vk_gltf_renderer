@@ -1,4 +1,4 @@
-#include "RenderGraph.h"
+#include "RenderGraph.hpp"
 #include <algorithm>
 
 namespace ame {

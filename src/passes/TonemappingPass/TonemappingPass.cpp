@@ -193,7 +193,7 @@ void TonemappingPass::createPipeline() {
     }
 }
 
-void TonemappingPass::execute(VkCommandBuffer cmdBuffer) {
+void TonemappingPass::execute(VkCommandBuffer cmdBuffer, VkImageView colorView, VkImageView depthView) {
     // 绑定计算管线
     vkCmdBindPipeline(cmdBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, m_pipeline);
     
@@ -237,7 +237,7 @@ void TonemappingPass::execute(VkCommandBuffer cmdBuffer) {
     postBarrier.newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
     postBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
     postBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    postBarrier.image = m_outputView; // 注意：这里应该是图像对象而非视图 
+    postBarrier.image = m_output; // 注意：这里应该是图像对象而非视图 
     postBarrier.subresourceRange = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1};
     
     vkCmdPipelineBarrier(cmdBuffer,

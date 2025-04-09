@@ -14,7 +14,7 @@ public:
     void setInputOutput(VkImageView inputView, VkImageView outputView, VkExtent2D extent);
     
     // 执行tonemapping
-    void execute(VkCommandBuffer cmdBuffer) override;
+    void execute(VkCommandBuffer cmdBuffer, VkImageView colorView, VkImageView depthView) override;
 
 private:
     static RenderPassConfig createConfig();

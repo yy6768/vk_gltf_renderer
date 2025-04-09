@@ -3,20 +3,27 @@
 #include <vulkan/vulkan.h>
 #include <string>
 #include <memory>
+#include <unordered_map>
 
 namespace ame {
 
-class Resource {
+/**
+ * @brief Render Graph Resource
+ * 
+ */
+class GraphResource {
 public:
+    using ResourceMap = std::unordered_map<std::string, std::shared_ptr<GraphResource>>;
+
     enum class Type {
-        Buffer,
-        Image,
-        Sampler,
-        DescriptorSet
+        Buffer = 0x0, // Buffer 类型
+        Image = 0x1, // Image 类型
+        Sampler = 0x2, // Sampler 类型
+        DescriptorSet = 0x3 // DescriptorSet 类型
     };
 
-    Resource(const std::string& name, Type type);
-    virtual ~Resource();
+    GraphResource(const std::string& name, Type type);
+    virtual ~GraphResource();
 
     // 获取资源名称
     const std::string& getName() const { return name_; }
